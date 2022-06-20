@@ -43,8 +43,6 @@ public class Startup
         services.AddApplicationServices();
         
         services.AddInfrastructureServices(_configuration);
-        
-        var serviceProvider = services.BuildServiceProvider();
     }
 
     public void Configure(IApplicationBuilder app, IApiVersionDescriptionProvider provider)
