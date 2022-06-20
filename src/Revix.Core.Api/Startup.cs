@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.FeatureManagement;
 using Revix.Core.Api.Services;
 using Revix.Core.Application;
@@ -17,14 +18,14 @@ namespace Revix.Core.Api;
 
 public class Startup
 {
-    public Startup(IConfiguration configuration, IWebHostEnvironment environment)
+    public Startup(IConfiguration configuration, IHostEnvironment environment)
     {
         _configuration = configuration;
         _environment = environment;
     }
 
     private readonly IConfiguration _configuration;
-    private readonly IWebHostEnvironment _environment;
+    private readonly IHostEnvironment _environment;
 
     public void ConfigureServices(IServiceCollection services)
     {
@@ -36,7 +37,7 @@ public class Startup
             .AddCustomCors()
             .AddCustomMvc()
             .AddCustomApiFeatures()
-            .AddCustomSwagger(_environment, _configuration)
+            .AddCustomSwagger()
             .AddCustomHealthChecks()
             .AddFeatureManagement();
 

@@ -81,8 +81,7 @@ public static class StartupExtensions
             });
 
 
-    public static IServiceCollection AddCustomSwagger(this IServiceCollection services, IWebHostEnvironment environment,
-        IConfiguration configuration)
+    public static IServiceCollection AddCustomSwagger(this IServiceCollection services)
     {
         services.AddSwaggerGen(c =>
         {
