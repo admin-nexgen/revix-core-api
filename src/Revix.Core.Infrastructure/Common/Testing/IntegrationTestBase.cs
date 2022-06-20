@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Revix.Core.Application;
 using Revix.Core.Infrastructure.Mappings;
@@ -10,7 +9,6 @@ public class IntegrationTestBase : TestBase
 {
     private readonly IServiceCollection _services = new ServiceCollection();
     private readonly IConfiguration _configuration;
-    private readonly IMapper _mapper;
         
     protected readonly ServiceProvider ServiceProvider;
 
