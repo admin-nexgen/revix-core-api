@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using Revix.Core.Common.Configurations;
 using Revix.Core.Common.Extensions;
 using Revix.Core.Common.HttpClients;
+using Revix.Core.Infrastructure.Clients;
 
 namespace Revix.Core.Infrastructure.Common.Testing;
 
@@ -16,26 +16,16 @@ namespace Revix.Core.Infrastructure.Common.Testing;
 /// </summary>
 public class FunctionalTestBase : TestBase
 {
-    protected const string ClientName = " FunctionalTest";
-    
     private readonly IConfiguration _configuration;
     private readonly IServiceCollection _services = new ServiceCollection();
     private readonly IHttpClientFactory _clientFactory;
         
     protected string BaseUrl { get; }
-        
-    protected string TestClientId { get; }
-        
-    // ReSharper disable once MemberCanBePrivate.Global
-    protected bool TestLocally { get; }
-
-    // ReSharper disable once MemberCanBePrivate.Global
+    
     protected ServiceProvider ServiceProvider { get; }
 
     protected FunctionalTestBase()
     {
-        TestLocally = false;
-            
         var builder = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false);
 
@@ -44,11 +34,7 @@ public class FunctionalTestBase : TestBase
         _services.AddHttpContextAccessor();
         
         #region  Cache
-        
-        var cacheOptions = new CacheOptions();
-        _configuration.GetSection(nameof(CacheOptions)).Bind(cacheOptions);
-        _services.AddSingleton(cacheOptions);
-        
+
         _services.AddMemoryCache();
         _services.AddDistributedMemoryCache();
 
@@ -56,18 +42,17 @@ public class FunctionalTestBase : TestBase
 
         #region Integrations Urls
 
-        var baseUrl = TestLocally ? "https://localhost:5001/" : _configuration.GetValue<string>("IntegrationUrl");
+        var baseUrl = _configuration.GetValue<string>("CoinMarketCapApiUrl");
+        BaseUrl = baseUrl;
 
-        TestClientId = _configuration.GetValue<string>("TestClientId");
-
-        _services.AddHttpClient(ClientName, client =>
+        _services.AddHttpClient(nameof(CryptocurrencyClient), client =>
             {
                 client.BaseAddress = new Uri(baseUrl);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             })
             .ConfigurePrimaryHttpMessageHandler(() => new DefaultHttpClientHandler())
-            .AddPolicyHandler(HttpExtensions.RetryPolicy(ClientName, 3));
+            .AddPolicyHandler(HttpExtensions.RetryPolicy(nameof(CryptocurrencyClient), 3));
 
         #endregion
 
@@ -76,12 +61,11 @@ public class FunctionalTestBase : TestBase
         _clientFactory = ServiceProvider.GetRequiredService<IHttpClientFactory>();
     }
 
-    protected async Task<HttpResponseMessage> SendAsync(HttpRequestMessage requestMessage, string jwtToken, string clientName,
+    protected async Task<HttpResponseMessage> SendAsync(HttpRequestMessage requestMessage, 
         int timeout = 10)
     {
-        var client = _clientFactory.CreateClient(clientName);
+        var client = _clientFactory.CreateClient(nameof(CryptocurrencyClient));
         client.Timeout = TimeSpan.FromMinutes(timeout);
-        requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
 
         var response = await client.SendAsync(requestMessage);
         return response;

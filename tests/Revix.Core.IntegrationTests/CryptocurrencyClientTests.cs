@@ -9,6 +9,7 @@ using Revix.Core.Infrastructure.Common.Testing;
 
 namespace Revix.Core.IntegrationTests;
 
+[TestClass]
 public class CryptocurrencyClientTests : IntegrationTestBase
 {
     private IMapper _mapper;

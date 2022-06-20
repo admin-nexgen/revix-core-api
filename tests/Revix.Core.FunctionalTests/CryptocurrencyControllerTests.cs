@@ -13,11 +13,11 @@ public class CryptocurrencyControllerTests : FunctionalTestBase
     [TestMethod]
     public async Task GetLatestListingsTest()
     {
-        const string path = "v1/listings/latest?start=1&limit=100";
+        const string path = "/v1/listings/latest?start=1&limit=100";
         var url = BaseUrl + path;
 
         var request = new HttpRequestMessage(HttpMethod.Get, url);
-        var response = await SendAsync(request, string.Empty, ClientName);
+        var response = await SendAsync(request);
             
         var result = await GetResponseAsync<ListingsLatestResponse>(response);
 

@@ -22,7 +22,7 @@ public class IntegrationTestBase : TestBase
         _configuration = builder.Build();
 
         _services.AddAutoMapper(typeof(CryptocurrencyProfile).Assembly);
-
+        
         _services.AddApplicationServices();
         
         _services.AddInfrastructureServices(_configuration);
