@@ -62,7 +62,6 @@ public static class StartupExtensions
 
     public static IServiceCollection AddCustomApiFeatures(this IServiceCollection services)
         => services
-            // .AddValidationErrorLogging()
             .AddVersionedApiExplorer(options =>
             {
                 options.GroupNameFormat = "'v'VVV";
