@@ -50,6 +50,7 @@ public class FunctionalTestBase : TestBase
                 client.BaseAddress = new Uri(baseUrl);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Add("X-CMC_PRO_API_KEY", "https://sandbox-api.coinmarketcap.com");
             })
             .ConfigurePrimaryHttpMessageHandler(() => new DefaultHttpClientHandler())
             .AddPolicyHandler(HttpExtensions.RetryPolicy(nameof(CryptocurrencyClient), 3));

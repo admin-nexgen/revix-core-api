@@ -1,10 +1,8 @@
 ﻿using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Revix.Core.Domain.Clients;
 using Revix.Core.Domain.Models;
-using Revix.Core.Infrastructure.Clients;
 using Revix.Core.Infrastructure.Common.Testing;
 
 namespace Revix.Core.IntegrationTests;
@@ -12,24 +10,14 @@ namespace Revix.Core.IntegrationTests;
 [TestClass]
 public class CryptocurrencyClientTests : IntegrationTestBase
 {
-    private IMapper _mapper;
-    private ILogger<CryptocurrencyClient> _logger;
-
-    [TestInitialize]
-    public void Initialize()
-    {
-        _mapper = ServiceProvider.GetRequiredService<IMapper>();
-        _logger = ServiceProvider.GetRequiredService<ILogger<CryptocurrencyClient>>();
-    }
-
     [TestMethod]
-    public async Task GetClientById_WhereValidIdSupplied_ReturnsValidClient()
+    public async Task GetLatestListingsTest()
     {
-        var agent = ServiceProvider.GetRequiredService<CryptocurrencyClient>();
-        var clientInfo = await agent.GetListingsLatestAsync(new ListingsLatestRequest());
-        Assert.IsNotNull(clientInfo);
-        Assert.IsNotNull(clientInfo.Data);
-        Assert.IsNotNull(clientInfo.Status);
-        Assert.IsTrue(clientInfo.Data.Count > 0);
+        var agent = ServiceProvider.GetRequiredService<ICryptocurrencyClient>();
+        var listing = await agent.GetListingsLatestAsync(new ListingsLatestRequest());
+        Assert.IsNotNull(listing);
+        Assert.IsNotNull(listing.Data);
+        Assert.IsNotNull(listing.Status);
+        Assert.IsTrue(listing.Data.Count > 0);
     }
 }

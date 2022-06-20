@@ -13,7 +13,7 @@ public class CryptocurrencyControllerTests : FunctionalTestBase
     [TestMethod]
     public async Task GetLatestListingsTest()
     {
-        const string path = "/v1/listings/latest?start=1&limit=100";
+        const string path = "/v1/cryptocurrency/listings/latest?start=1&limit=100";
         var url = BaseUrl + path;
 
         var request = new HttpRequestMessage(HttpMethod.Get, url);
@@ -22,6 +22,6 @@ public class CryptocurrencyControllerTests : FunctionalTestBase
         var result = await GetResponseAsync<ListingsLatestResponse>(response);
 
         Assert.IsNotNull(result);
-        Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
     }
 }
